@@ -1,0 +1,327 @@
+@import url('//at.alicdn.com/t/font_454259_s76nvic6ztowdn29.css');
+@import './variable.scss';
+// 主色调
+
+//注释的样式
+.note{
+  color: #999;
+  font-size: 12px;
+}
+.primary {
+  color: $primary;
+}
+.warning {
+  color: $warning;
+}
+.subTitleColor {
+  color: #878d99;
+}
+.disabled {
+  color: rgb(153, 153, 153);
+}
+.danger {
+  color: $danger;
+}
+.info {
+  color: $input-def-color;
+}
+.remind {
+  color: rgb(176, 183, 191);
+  font-size: 10px;
+}
+.skip {
+  background-color: #EFF2F7;
+}
+.dashedLine {
+  border-top: 1px dashed #cccccc;
+}
+// 项目开发周期中的几种状态
+.undev {
+  color: #858585;
+}
+body, header, footer, nav, section, aside, article, ul, dl, dt, dd, p, h1, h2, h3, h4,h5, h6, i, b, textarea, input, select, figure, figcaption {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-style: normal;
+  text-decoration: none;
+  list-style-type: none;
+  box-sizing: border-box;
+  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-font-smoothing: antialiased;
+  &:focus {
+    outline: none;
+  }
+}
+.router-link-active {
+  &:focus {
+    outline: none;
+  }
+}
+a {
+  text-decoration: none;
+  @extend .router-link-active;
+  color: #00BBFF;
+}
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar
+{
+  width: 0;
+  height: 0;
+  background-color: #F5F5F5;
+}
+
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0);
+  border-radius: 10px;
+  background-color: #F5F5F5;
+}
+
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb
+{
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  background-color: #555;
+}
+
+// 透明滚动条
+.nice_scroll {
+  /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+  &::-webkit-scrollbar
+  {
+    width: 6px;
+    height: 0px;
+    background-color: #F5F5F5;
+  }
+
+  /*定义滑块 内阴影+圆角*/
+  &::-webkit-scrollbar-thumb
+  {
+    width: 6px;
+    border-radius: 3px;
+    -webkit-box-shadow: inset 0 0 0px rgba(0,0,0,.3);
+    background-color: rgba(85, 85, 85, 0.41);
+    &:hover {
+      background-color: rgba(85, 85, 85, 0.9);
+    }
+  }
+
+  /*定义滚动条轨道 内阴影+圆角*/
+  &::-webkit-scrollbar-track
+  {
+    -webkit-box-shadow: inset 0 0 0 rgba(0,0,0,0.3);
+  }
+}
+
+// 重写el-tree 添加滚动条
+.el-tree {
+  @extend .nice_scroll;
+  max-height: 300px;
+  min-height: 200px;
+  overflow: auto;
+}
+.el-table {
+  font-size: 13px;
+  border-radius: 6px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.el-menu-item:focus {
+  outline: 0;
+  background-color: #393f51;
+}
+
+input[type="button"], input[type="submit"], input[type="search"], input[type="reset"] {
+  -webkit-appearance: none;
+}
+
+textarea { -webkit-appearance: none;}
+
+html,body {
+  background-color: $white;
+  color: $coffe;
+  height: 100%;
+}
+
+.clear:after{
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.clear{
+  zoom:1;
+}
+
+.back_img{
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.margin_r_2 {
+  margin-right: 2px;
+}
+.margin_l_2 {
+  margin-left: 2px;
+}
+.hide{
+  display: none;
+}
+
+.show{
+  display: block;
+}
+
+.ellipsis{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.paddingTop{
+  padding-top: 1.95rem;
+}
+// 通用字体图标样式
+.iconfont {
+  font-size: 13px;
+  clear: both;
+}
+// 激活通用样式
+.active {
+  color: $primary;
+}
+// 醒目数字
+.hotNum {
+  font-size: 22px;
+  color: $primary;
+}
+//重写提示框样式
+.tool_notes.el-tooltip__popper.is-dark{
+  background: rgba(0,0,0,0.6);
+}
+.message_position.el-message{
+  top: 50%;
+  z-index: 100000;
+}
+// 无数据样式
+.noData {
+  position: absolute;
+  top: 130px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgb(94, 121, 130);
+  font-size: 15px;
+}
+//MessageBox 弹框重写（修正×位置）
+.el-message-box__wrapper .el-message-box__close {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #999;
+  cursor: pointer;
+  line-height: 20px;
+  text-align: center;
+}
+//导入历史订单后的全屏遮罩
+.fullLoad.el-loading-mask.is-fullscreen {
+  z-index: 2006;
+}
+//重写alert样式
+.fixedHint {
+  position: absolute;
+  top: 112%;
+  left: 50%;
+  width: 550px;
+  margin-left: -275px;
+  border-radius: 2px;
+  .el-alert.el-alert--warning {
+    background-color: #ff7900;
+    .el-alert__content {
+      padding: 0 10px;
+      .el-alert__title {
+        font-size: 16px;
+      }
+      .el-alert__description {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+/* 重写el-menu */
+._submenu {
+  text-align: left;
+  color: $siderbar-color;
+  background-color: #393f51;
+  .item_active {
+    color: $white;
+    background-color: #393f51;
+  }
+  &:hover {
+    @extend .item_active;
+  }
+  &:active {
+    @extend .item_active;
+  }
+}
+$siderbarbg: #313644;
+.siderbarh {
+  height: 45px;
+  line-height: 45px;
+}
+.el-menu {
+  @extend ._submenu;
+  li {
+    border-bottom: 1px solid $siderbarbg;
+  }
+}
+.el-submenu {
+  @extend ._submenu;
+  .el-submenu__title {
+    @extend .siderbarh;
+    @extend ._submenu;
+  }
+  .el-menu-item {
+    font-size: 13px;
+    background-color: $siderbarbg;
+    &:hover {
+      background-color: $siderbarbg;
+    }
+    &:active {
+      background-color: $siderbarbg;
+    }
+  }
+}
+.el-menu-item {
+  @extend .siderbarh;
+  @extend ._submenu;
+}
+.el-menu-item.is-active {
+  color: $primary;
+}
+.el-input-group__append {
+  background-color: #409EFF;
+  color: #fff;
+}
+.el-tabs__nav {
+  margin-left: 20px;
+}
+// 重写用户管理tab样式
+.userTable {
+  .el-tabs__header {
+    margin: 0;
+  }
+}
+// 短信充值提示框
+.el-message-box__message {
+  .tip_message{
+    margin-left: 50px;
+  }
+}
