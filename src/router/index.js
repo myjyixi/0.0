@@ -36,7 +36,7 @@ router.beforeEach((to, from, next) => {
     var token = to.query.token
     if (token) {
       // 获取用户信息
-      store.dispatch('getUser', token).then(user => {
+      store.dispatch('getUserData', token).then(user => {
         // 将token存入本地
         utils.setLocalStore(user.user_id, token)
         // 跳转到主页

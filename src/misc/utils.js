@@ -3,7 +3,7 @@
  * @Author: xiamu
  * @Date: 2018-05-03 01:36:37
  * @Last Modified by: xiamu
- * @Last Modified time: 2018-05-03 19:49:55
+ * @Last Modified time: 2018-05-11 19:51:48
  */
 import vue from 'vue'
 import global from './global.constant'
@@ -57,5 +57,20 @@ export default {
       }
     })
   },
-  /////////////////////////////////////////以上估算短信长度方法/////////////////////////////////////////
+  // 经度格式
+  formatLon(val) {
+    if (val > 0) {
+      return Math.abs(val).toFixed(7) + ' E'
+    } else {
+      return Math.abs(val).toFixed(7) + ' W'
+    }
+  },
+  // 维度格式
+  formatLat(val) {
+    if (val > 0) {
+      return Math.abs(val).toFixed(7) + ' N'
+    } else {
+      return Math.abs(val).toFixed(7) + ' S'
+    }
+  },
 }

@@ -10,9 +10,9 @@
         </div>
         <div class="word">
           <h1>
-            AI&nbsp;&nbsp;CRM
+            Web&nbsp;&nbsp;GIS
           </h1>
-          <h4>
+          <!-- <h4>
             <span style="font-family:'HYGYT'; font-style:normal; font-weight:normal;">“魔方墙”</span>为你而在
           </h4>
           <h4>
@@ -22,7 +22,7 @@
             @2016-2017 杭州聚效科技有限公司 版权所有
             <br> 增值电信业务经营许可证：
             <a href="http://www.miitbeian.gov.cn/" class="" target="_blank">浙ICP备14043836号</a>
-          </div>
+          </div> -->
 
         </div>
       </div>

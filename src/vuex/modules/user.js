@@ -15,13 +15,10 @@ const actions = {
   // 用户登录
   login({ commit }, loginData) {
     return new Promise((resolve, reject) => {
-      // API_USER.login(loginData).then(data => {
-        let data = {
-          token: '12345678987654321',
-          message: 'success'
-        }
+      API_USER.login(loginData).then(data => {
+        commit(TYPE.GET_TOKEN, data.token)
         resolve(data)
-      // })
+      })
     })
   },
   // 获取token

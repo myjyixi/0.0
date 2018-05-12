@@ -9,15 +9,14 @@ import router from './router'
 import tableList from 'components/list/tableList'
 
 import ElementUI from 'element-ui'
-// 引入ElementUI css
-// import '../theme/index.css'
+
 sync(store, router)
 
 // 注册组件
 Vue.component('tableList', tableList)
 
 Vue.config.productionTip = false
-Vue.use(ElementUI)
+Vue.use(ElementUI, { size: 'small' })
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

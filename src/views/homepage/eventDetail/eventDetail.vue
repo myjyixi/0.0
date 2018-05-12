@@ -1,63 +1,41 @@
 <template>
   <div>
-    <el-table class="table-list" ref="multipleTable" :data="listData" @sort-change="sortChange" tooltip-effect="dark" stripe>
-      <el-table-column label="测量事件名" prop="event_name" align="center" min-width="130">
-        <template slot-scope="scope">
-          <span class="event-click" @click="goEvent">{{scope.row.event_name}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="地点" prop="site"></el-table-column>
-      <el-table-column label="经纬度" prop="location">
+    <!-- 事件信息 -->
+    <el-table class="table-list" ref="multipleTable" :data="eventData">
+      <el-table-column label="测量事件名" prop="event_name" align="center"></el-table-column>
+      <el-table-column label="地点" prop="site" align="center"></el-table-column>
+      <el-table-column label="经纬度" prop="location" align="center">
         <template slot-scope="scope">
           <span>
-            {{scope.row.location.longitude}}&nbsp;&nbsp;
-            {{scope.row.location.latitude}}&nbsp;&nbsp;
-            {{scope.row.location.height}}
+            {{utils.formatLon(scope.row.longitude)}}&nbsp;&nbsp;
+            {{utils.formatLat(scope.row.latitude)}}
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="重力值" prop="g"></el-table-column>
-      <el-table-column label="仪器" prop="instrument"></el-table-column>
-      <el-table-column label="操作员" prop="operator">
+      <el-table-column label="高度(m)" prop="height" align="center">
+        <template slot-scope="scope">
+          <span>{{scope.row.height.toFixed(7)}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="重力值(μGal)" prop="g" align="center">
+        <template slot-scope="scope">
+          <span>{{scope.row.g.toFixed(7)}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="仪器" prop="instrument" align="center"></el-table-column>
+      <el-table-column label="操作员" prop="operator" align="center">
         <template slot-scope="scope">
           <span class="event-click" @click="goUser">{{scope.row.operator}}</span>
         </template>
       </el-table-column>
     </el-table>
+    <!-- 详细数据 -->
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="表格数据" name="tableData">
-        <table-list ref="tableList" :listData="userList" @getListData="getUserList">
-          <template slot="tableData" slot-scope="scope">
-            <el-table class="table-list" ref="multipleTable" :data="scope.listData" @sort-change="sortChange" tooltip-effect="dark" stripe>
-              <el-table-column label="MJD" prop="event_name" align="center" min-width="130">
-                <template slot-scope="scope">
-                  <span class="event-click" @click="goEvent">{{scope.row.event_name}}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="原始重力值" prop="site"></el-table-column>
-              <el-table-column label="模型修正重力值" prop="location">
-                <template slot-scope="scope">
-                  <span>
-                    {{scope.row.location.longitude}}&nbsp;&nbsp;
-                    {{scope.row.location.latitude}}&nbsp;&nbsp;
-                    {{scope.row.location.height}}
-                  </span>
-                </template>
-              </el-table-column>
-              <el-table-column label="倾斜修正" prop="g"></el-table-column>
-              <el-table-column label="潮汐模型修正" prop="instrument"></el-table-column>
-              <el-table-column label="系统无关项" prop="operator">
-                <template slot-scope="scope">
-                  <span class="event-click" @click="goUser">{{scope.row.operator}}</span>
-                </template>
-              </el-table-column>
-            </el-table>
-          </template>
-        </table-list>
+        <event-detail-list :listData="detailData"></event-detail-list>
       </el-tab-pane>
       <el-tab-pane label="图示" name="graph">
-        <!-- <update-record></update-record> -->
-        图表。。
+        <event-detail-graph ref="graph"></event-detail-graph>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -65,47 +43,57 @@
 
 <script type="text/ecmascript-6" scoped>
 import { mapGetters, mapActions } from 'vuex'
-import pagination from 'src/misc/pagination'
+import utils from 'src/misc/utils'
+// import pagination from 'src/misc/pagination'
+import eventDetailList from 'components/eventDetail/eventDetailList'
+import eventDetailGraph from 'components/eventDetail/eventDetailGraph'
 export default {
   data() {
     return {
-      pagination: pagination,
-      listData: [{
-        id: 1,
-        event_name: 'April 27 event',
-        site: 'Hangzhou',
-        location: {longitude: '120E', latitude: '30N', height: '20m'},
-        g: 9.8,
-        instrument: 'ZAG-01',
-        operator: 'xiamu'
-      }],
+      utils: utils,
+      // pagination: pagination,
       activeName: 'tableData',
-      userList: []
     }
   },
   computed: {
     ...mapGetters([
-      'eventListData'
-    ])
+      'eventDetailData'
+    ]),
+    eventData() {
+      return this.eventDetailData.event
+    },
+    detailData() {
+      return this.eventDetailData.detail
+    }
   },
   mounted () {
-    // if (this.userList === []) {
-      // }
-    this.getEventListData().then(() => {
-      this.userList = this.eventListData
-    })
+    // 如果数据为空，获取测量事件详细数据
+    if (JSON.stringify(this.eventData) === '[]' || JSON.stringify(this.detailData) === '[]') {
+      this.getEventDetailData(this.getEventId())
+    }
   },
   methods: {
     ...mapActions([
-      'getEventListData'
+      'getEventDetailData'
     ]),
-    getUserList() {},
-    sortChange() {},
-    goEvent() {
-      console.log('--hello')
+    // 获取事件id
+    getEventId() {
+      return this.$router.currentRoute.query.id
     },
     goUser() {},
-    handleClick() {}
+    handleClick(val) {
+      if (val.name === 'graph') {
+        this.$nextTick(() => {
+          // 绘制图表
+          this.$refs.graph.initGraph()
+          this.$refs.graph.drawGraph()
+        })
+      }
+    }
+  },
+  components: {
+    eventDetailList,
+    eventDetailGraph
   }
 }
 </script>

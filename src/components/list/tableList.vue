@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="toolbox_control">
-      <slot name="toolbox_search"></slot>
+    <div class="toolbox-wrapper">
+      <slot name="toolbox"></slot>
     </div>
     <div v-loading="loading" element-loading-text="数据较多,请耐心等待">
       <slot name="tableData" :listData="listData"></slot>
@@ -76,12 +76,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.toolbox_control {
+.toolbox-wrapper {
   width: 100%;
   background: #f1f2f3;
-  .toolbox_search {
+  .search-time, .search-keyword {
     display: inline-block;
     margin: 9px 20px;
+    vertical-align: top;
   }
 }
 .pagination {

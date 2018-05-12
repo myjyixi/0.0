@@ -4,7 +4,13 @@
   "description": "A Vue.js project",
   "author": "myj",
   "private": true,
+  "apidoc": {
+    "title": "GIS 前后端对接文档",
+    "url": "http://localhost:3000/api",
+    "sampleUrl": "http://localhost:3000/api"
+  },
   "scripts": {
+    "api": "apidoc -i src/service -o doc/",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
@@ -17,12 +23,13 @@
     "axios": "^0.17.1",
     "babel-polyfill": "^6.23.0",
     "date-fns": "^1.29.0",
+    "echarts": "^4.1.0",
     "element-ui": "^2.3.7",
     "immutable": "^3.8.2",
     "vue": "^2.5.2",
     "vue-axios": "^1.2.2",
     "vue-router": "^3.0.1",
-    "vue-upload-component": "^2.3.0-beta.2",
+    "vue-upload-component": "^2.8.5",
     "vuex": "^3.0.1",
     "vuex-router-sync": "^5.0.0"
   },

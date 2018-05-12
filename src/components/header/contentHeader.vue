@@ -8,7 +8,6 @@
             <div class="title_custom">
               <span :class="name.length === 0 ? 'el-icon-loading' : '' ">
                 {{name}}
-                <!--<span class="notes_custom">{{notes}}</span>-->
               </span>
             </div>
           </h3>
@@ -20,15 +19,14 @@
 <script type="text/ecmascript-6" scoped>
 export default {
   props: [
-    'name',
-    // 'notes'
+    'name'
   ]
 }
 </script>
 <style lang="scss" scoped>
 @import '../../style/variable.scss';
 .title {
-  background-color: #252c33; // background-image: linear-gradient(-180deg, #ffffff 0%, #f8f8f9 100%);
+  background-color: #252c33;
   padding-right: 168px;
 }
 

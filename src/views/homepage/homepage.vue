@@ -1,26 +1,45 @@
 <template>
   <div>
-    <table-list ref="tableList" :listData="userList" @getListData="getUserList">
+    <table-list ref="tableList" :listData="eventList" @getListData="getEventList">
+      <template slot="toolbox">
+        <div class="search-time">
+          <el-date-picker v-model="searchTime" type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间" value-format="yyyy-MM-dd HH:mm:ss" @change="getEventList()">
+          </el-date-picker>
+        </div>
+        <div class="search-keyword" @keydown.enter="getEventList()">
+          <el-input v-model="searchWord" clearable placeholder="测量事件名/地点/仪器/操作员">
+            <el-button slot="append" @click="getEventList()">搜索</el-button>
+          </el-input>
+        </div>
+      </template>
       <template slot="tableData" slot-scope="scope">
-        <el-table class="table-list" ref="multipleTable" :data="scope.listData" @sort-change="sortChange" tooltip-effect="dark" stripe>
-          <el-table-column label="测量事件名" prop="event_name" align="center" min-width="130">
+        <el-table class="table-list" ref="multipleTable" :data="scope.listData" tooltip-effect="dark" stripe>
+          <el-table-column label="测量事件名" prop="event_name" align="center">
             <template slot-scope="scope">
-              <span class="event-click" @click="goEvent">{{scope.row.event_name}}</span>
+              <span class="event-click" @click="goEvent(scope.row.id)">{{scope.row.event_name}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="地点" prop="site"></el-table-column>
-          <el-table-column label="经纬度" prop="location">
+          <el-table-column label="地点" prop="site" align="center"></el-table-column>
+          <el-table-column label="经纬度" prop="location" align="center">
             <template slot-scope="scope">
               <span>
-                {{scope.row.location.longitude}}&nbsp;&nbsp;
-                {{scope.row.location.latitude}}&nbsp;&nbsp;
-                {{scope.row.location.height}}
+                {{utils.formatLon(scope.row.longitude)}}&nbsp;&nbsp;
+                {{utils.formatLat(scope.row.latitude)}}
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="重力值" prop="g"></el-table-column>
-          <el-table-column label="仪器" prop="instrument"></el-table-column>
-          <el-table-column label="操作员" prop="operator">
+          <el-table-column label="高度(m)" prop="height" align="center">
+            <template slot-scope="scope">
+              <span>{{scope.row.height.toFixed(7)}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="重力值(μGal)" prop="g" align="center">
+            <template slot-scope="scope">
+              <span>{{scope.row.g.toFixed(7)}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="仪器" prop="instrument" align="center"></el-table-column>
+          <el-table-column label="操作员" prop="operator" align="center">
             <template slot-scope="scope">
               <span class="event-click" @click="goUser">{{scope.row.operator}}</span>
             </template>
@@ -33,12 +52,14 @@
 
 <script type="text/ecmascript-6" scoped>
 import { mapGetters, mapActions } from 'vuex'
-import pagination from 'src/misc/pagination'
+import utils from 'src/misc/utils'
 export default {
   data() {
     return {
-      pagination: pagination,
-      userList: []
+      utils: utils,
+      eventList: [],
+      searchTime: [],
+      searchWord: ''
     }
   },
   computed: {
@@ -46,26 +67,33 @@ export default {
       'eventListData'
     ])
   },
-  mounted () {
-    // if (this.userList === []) {
-      // }
+  mounted() {
     this.getEventListData().then(() => {
-      this.userList = this.eventListData
+      this.eventList = this.eventListData
     })
   },
   methods: {
     ...mapActions([
-      'getEventListData'
+      'getEventListData',
+      'getEventDetailData'
     ]),
-    getUserList() {},
-    sortChange() {},
-    goEvent() {
-      console.log('--hello')
+    // 获取事件列表
+    getEventList() {
+      this.getEventListData([...this.searchTime, this.searchWord])
+      // console.log(this.searchTime)
+    },
+    /**
+     * 跳转至事件详细数据
+     * @param pid {Number} 导入数据id
+     */
+    goEvent(pid) {
+      this.$router.push({
+        path: '/eventDetail?id=' + pid
+      })
+      // 获取测量事件详细数据
+      this.getEventDetailData(pid)
     },
     goUser() {
-      this.$router.push({
-        path: '/eventDetail'
-      })
     }
   }
 }
@@ -73,7 +101,6 @@ export default {
 <style lang="scss" scoped>
 .table-list {
   width: 100%;
-  // padding: 0;
   .event-click {
     cursor: pointer;
     &:hover {

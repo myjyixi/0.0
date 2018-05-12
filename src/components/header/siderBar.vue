@@ -1,7 +1,7 @@
 <template>
   <div class="siderbar">
     <div class="logo">
-      <img class="config_bg" src="../../assets/images/logo.jpg"/>
+      <img class="config_bg" src="../../assets/images/ZAG.png"/>
     </div>
     <div class="siderbar_main">
       <el-menu class="fix_width" :default-active="curMenu">
@@ -64,22 +64,17 @@ export default {
 
 <style lang="scss" scoped>
 @import '../../style/variable.scss';
-// 齿轮动画
-// @import '../../style/gear.css';
 
 .siderbar {
   overflow: auto;
   height: 99%;
-  div:not(.gearbox.gear) {
-    height: auto;
-  }
   .logo {
     height: 120px;
     width: 179px;
     position: fixed;
     overflow: hidden;
     z-index: 100;
-    background: #fff;
+    background: rgba(255, 255, 255, 1);
     border-right: 1px solid #2c303c;
     .config_bg {
       display: block;

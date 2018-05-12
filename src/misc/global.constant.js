@@ -2,9 +2,10 @@
  * @Author: xiamu
  * @Date: 2018-05-01 19:42:44
  * @Last Modified by: xiamu
- * @Last Modified time: 2018-05-02 17:23:40
+ * @Last Modified time: 2018-05-06 23:15:47
  */
 export default {
+  // 侧边菜单
   sidebarList: [
     {
       label: '首页',
@@ -15,29 +16,28 @@ export default {
       label: '事件管理',
       value: 'eventManager',
       path: '/eventManager',
-      icon: 'icon-userSet',
-      subItem: [{
-        pid: 'userManager',
-        label: '短信管理',
-        path: '/userManager/smsManager',
-        value: 'smsManager',
-      }, {
-        pid: 'userManager',
-        label: '黑白名单',
-        path: '/userList',
-        value: 'userList',
-      }]
+      icon: 'icon-iconwenjian'
     }, {
       label: '用户管理',
       path: '/userManager',
       value: 'userManager',
-      icon: 'icon-message',
-      subItem: [{
-        pid: 'msgManager',
-        label: '通知管理',
-        path: '/notice',
-        value: 'notice',
-      }]
+      icon: 'icon-userSet',
+    }
+  ],
+  // 头部标题
+  contentHeaderList: [
+    {
+      label: '首页',
+      path: '/homepage'
+    }, {
+      label: '测量事件',
+      path: '/eventDetail'
+    }, {
+      label: '事件管理',
+      path: '/eventManager'
+    }, {
+      label: '用户管理',
+      path: '/userManager'
     }
   ],
 }

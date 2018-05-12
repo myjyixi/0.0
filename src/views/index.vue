@@ -16,6 +16,7 @@
 </template>
 
 <script type="text/ecmascript-6" scoped>
+import { mapGetters, mapActions } from 'vuex'
 import g_const from 'src/misc/global.constant'
 import siderBar from 'components/header/siderBar.vue'
 import headerBar from 'components/header/headerBar.vue'
@@ -23,32 +24,40 @@ import contentHeader from 'components/header/contentHeader.vue'
 export default {
   name: 'App',
   computed: {
+    ...mapGetters([
+      'userData'
+    ]),
     headerTitle() {
       var _p = this.$route.path
       var _title = this.getTitle(_p)
       return _title
     }
   },
+  mounted() {
+    if (JSON.stringify(this.userData) === '{}') {
+      this.getUserData()
+    }
+  },
   methods: {
+    ...mapActions([
+      'getUserData'
+    ]),
     getTitle(_path) {
-      var ret = g_const.sidebarList.filter(o => {
+      var ret = g_const.contentHeaderList.filter(o => {
         return o.path.toLocaleLowerCase() === _path.toLocaleLowerCase()
       })
       if (ret.length > 0) {
         return ret[0].label
       } else {
         var _ret = []
-        g_const.sidebarList.forEach(k => {
-          // if (k.subItem) {
+        g_const.contentHeaderList.forEach(k => {
           if (k.subItem && k.subItem instanceof Array) {
             k.subItem.forEach(item => {
               _ret.push(item)
             })
-            // _ret.push(k.subItem)
           }
         })
         ret = _ret.filter(t => {
-          // return ('/' + t.pid + t.path).toLocaleLowerCase() === _path.toLocaleLowerCase()
           return t.path.toLocaleLowerCase() === _path.toLocaleLowerCase()
         })
         if (ret.length > 0) {
