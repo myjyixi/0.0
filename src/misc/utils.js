@@ -3,7 +3,7 @@
  * @Author: xiamu
  * @Date: 2018-05-03 01:36:37
  * @Last Modified by: xiamu
- * @Last Modified time: 2018-05-11 19:51:48
+ * @Last Modified time: 2018-05-17 21:42:29
  */
 import vue from 'vue'
 import global from './global.constant'
@@ -56,6 +56,28 @@ export default {
         }
       }
     })
+  },
+  // 获取当前时间(yy-MM-DD HH:mm:SS)
+  getNowTime() {
+    let nowDate = new Date()
+    let year = nowDate.getFullYear()
+    let month = nowDate.getMonth() + 1
+    let date = nowDate.getDate()
+    let hours = nowDate.getHours()
+    let minute = nowDate.getMinutes()
+    let second = nowDate.getSeconds()
+
+    let nowTime = year + '-' + this.formatTime(month) + '-' + this.formatTime(date) + ' ' +
+        this.formatTime(hours) + ':' + this.formatTime(minute) + ':' + this.formatTime(second)
+    return nowTime
+  },
+  // 日期补零
+  formatTime(val) {
+    if (val > 9) {
+      return val
+    } else {
+      return '0' + val
+    }
   },
   // 经度格式
   formatLon(val) {

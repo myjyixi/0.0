@@ -32,6 +32,15 @@ const actions = {
         resolve(data)
       })
     })
+  },
+  // 上传测量事件
+  uploadEventData({ commit }, eventData) {
+    return new Promise((resolve, reject) => {
+      API_EVENT.uploadEventData(eventData).then(data => {
+        // commit(TYPE.UPLOAD_EVENT_DATA, data)
+        resolve(data)
+      })
+    })
   }
 }
 

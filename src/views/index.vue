@@ -24,24 +24,13 @@ import contentHeader from 'components/header/contentHeader.vue'
 export default {
   name: 'App',
   computed: {
-    ...mapGetters([
-      'userData'
-    ]),
     headerTitle() {
       var _p = this.$route.path
       var _title = this.getTitle(_p)
       return _title
     }
   },
-  mounted() {
-    if (JSON.stringify(this.userData) === '{}') {
-      this.getUserData()
-    }
-  },
   methods: {
-    ...mapActions([
-      'getUserData'
-    ]),
     getTitle(_path) {
       var ret = g_const.contentHeaderList.filter(o => {
         return o.path.toLocaleLowerCase() === _path.toLocaleLowerCase()

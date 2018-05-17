@@ -11,7 +11,7 @@
           </span> 欢迎&nbsp;
           <el-dropdown trigger="click" @command="otherSettingClick">
             <span class="el-dropdown-link user">
-              <span class="num">{{user_nick}}</span>
+              <span class="num">{{userData.user_name}}</span>
               <i class="el-icon-caret-bottom el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
@@ -33,14 +33,17 @@ export default {
     return {
       // headerData: [],
       // g_const: g_const,
-      user_nick: 'xiamu'
+      // user_nick: 'xiamu'
     }
   },
   mounted() {
+    if (JSON.stringify(this.userData) === '{}') {
+      this.getUserData()
+    }
   },
   computed: {
     ...mapGetters([
-      // 'userInfo'
+      'userData'
     ]),
     // user() {
     //   return this.userInfo
@@ -48,7 +51,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      // 'getUserData'
+      'getUserData'
     ]),
     otherSettingClick(code) {
       // 退出登录

@@ -2,7 +2,7 @@
  * @Author: xiamu
  * @Date: 2018-05-02 19:36:50
  * @Last Modified by: xiamu
- * @Last Modified time: 2018-05-12 14:10:41
+ * @Last Modified time: 2018-05-17 22:09:43
  */
 import CommonHttpTransform from './commonHttpTransform.service.js'
 import pagination from 'src/misc/pagination'
@@ -30,61 +30,32 @@ export default {
   // 获取测量事件详细数据
   getEventDetailData(eventId) {
     return new Promise((resolve, reject) => {
-      // CommonHttpTransform.get(
-      //   '/event_detail' +
-      //   '?id=' + eventId + // 事件id
-      //   '&page=' + pagination.pageIndex + // 当前页码
-      //   '&per_page=' + pagination.pageSize // 每页条数
-      // )
-      console.log('/event_detail?id=' + eventId)
-      let _data = {
-        data: {
-          event: [{
-            id: 1,
-            event_name: 'April 27 event',
-            site: 'Hangzhou',
-            longitude: 134.3223,
-            latitude: 34.423,
-            height: 123.34,
-            g: 9.8,
-            instrument: 'ZAG-01',
-            operator: 'xiamu'
-          }],
-          detail: [{
-            mjd: 58161.2682,
-            g: 979341138.5,
-            g_corr: 97341083.9,
-            corr_tilt: 0.0,
-            corr_tide: -54.7,
-            independ: 5681.1
-          }, {
-            mjd: 58161.2688,
-            g: 979341100.9,
-            g_corr: 97341046.0,
-            corr_tilt: 0.0,
-            corr_tide: -54.9,
-            independ: 5674.4
-          }, {
-            mjd: 58161.2695,
-            g: 979341118.8,
-            g_corr: 97341063.7,
-            corr_tilt: 0.0,
-            corr_tide: -55.1,
-            independ: 5658.1
-          }]
-        },
-        pagination: {
-          per_page: 10,
-          current_page: 1,
-          total: 12
+      CommonHttpTransform.get(
+        '/event_detail' +
+        '?id=' + eventId + // 事件id
+        '&page=' + pagination.pageIndex + // 当前页码
+        '&per_page=' + pagination.pageSize // 每页条数
+      ).then(data => {
+        if (data.pagination) {
+          pagination.totalNum = data.pagination.total
+          pagination.pageSize = data.pagination.per_page
+          pagination.pageIndex = data.pagination.current_page
         }
-      }
-      if (_data.pagination) {
-        pagination.totalNum = _data.pagination.total
-        pagination.pageSize = _data.pagination.per_page
-        pagination.pageIndex = _data.pagination.current_page
-      }
-      resolve(_data.data)
+        resolve(data.data)
+      })
+    })
+  },
+  // 上传测量事件
+  uploadEventData(eventData) {
+    return new Promise((resolve, reject) => {
+      CommonHttpTransform.post('/upload', eventData).then(data => {
+        if (data.pagination) {
+          pagination.totalNum = data.pagination.total
+          pagination.pageSize = data.pagination.per_page
+          pagination.pageIndex = data.pagination.current_page
+        }
+        resolve(data.data)
+      })
     })
   }
 

@@ -19,7 +19,10 @@
       </el-table-column>
       <el-table-column label="重力值(μGal)" prop="g" align="center">
         <template slot-scope="scope">
-          <span>{{scope.row.g.toFixed(7)}}</span>
+          <span>
+            {{scope.row.g.toFixed(7)}}
+            {{scope.row.uncertainty ? ('(' + scope.row.uncertainty + ')') : ''}}
+          </span>
         </template>
       </el-table-column>
       <el-table-column label="仪器" prop="instrument" align="center"></el-table-column>
