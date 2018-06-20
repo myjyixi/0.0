@@ -3,11 +3,10 @@
  * @Author: xiamu
  * @Date: 2018-05-03 01:36:37
  * @Last Modified by: xiamu
- * @Last Modified time: 2018-05-17 21:42:29
+ * @Last Modified time: 2018-06-20 22:27:53
  */
 import vue from 'vue'
 import global from './global.constant'
-import utils from '../misc/utils'
 
 export default {
   ///////////////localStore 过期时间函数//////////////////
@@ -45,6 +44,30 @@ export default {
       }
     })
   },
+  showInfoMsg(t, msg, cb) {
+    t.$message({
+      message: msg,
+      type: 'info',
+      customClass: 'message_position',
+      onClose: () => {
+        if (cb) {
+          cb()
+        }
+      }
+    })
+  },
+  showWarningMsg(t, msg, cb) {
+    t.$message({
+      message: msg,
+      type: 'warning',
+      customClass: 'message_position',
+      onClose: () => {
+        if (cb) {
+          cb()
+        }
+      }
+    })
+  },
   showErrorMsg(t, msg, cb) {
     t.$message({
       message: msg,
@@ -56,6 +79,24 @@ export default {
         }
       }
     })
+  },
+  // 格式化日期（用于表格）
+  format_date(val) {
+    if (!val) {
+      return '/'
+    } else {
+      let time = val.split(' ')
+      return time[0]
+    }
+  },
+  // 格式化时间（用于表格）
+  format_time(val) {
+    if (!val) {
+      return '/'
+    } else {
+      let time = val.split(' ')
+      return time[1]
+    }
   },
   // 获取当前时间(yy-MM-DD HH:mm:SS)
   getNowTime() {
@@ -87,7 +128,7 @@ export default {
       return Math.abs(val).toFixed(7) + ' W'
     }
   },
-  // 维度格式
+  // 纬度格式
   formatLat(val) {
     if (val > 0) {
       return Math.abs(val).toFixed(7) + ' N'

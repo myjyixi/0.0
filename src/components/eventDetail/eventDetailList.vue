@@ -18,7 +18,6 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      // eventDetail: []
     }
   },
   computed: {
@@ -29,20 +28,18 @@ export default {
       return this.listData
     }
   },
-  mounted () {
-    // this.eventDetail = this.listData
-  },
-  watch: {
-    // listData() {
-    //   this.eventDetail = this.listData
-    // }
-  },
   methods: {
     ...mapActions([
-      // 'getEventListData'
+      'getEventDetailData'
     ]),
-    // 获取列表数据
-    getDetailList() {},
+    // 获取列表数据（用于分页获取）
+    getDetailList() {
+      this.getEventDetailData(this.getEventId())
+    },
+    // 获取事件id
+    getEventId() {
+      return this.$router.currentRoute.query.id
+    },
   },
   props: [
     'listData'
@@ -52,7 +49,6 @@ export default {
 <style lang="scss" scoped>
 .table-list {
   width: 100%;
-  // padding: 0;
   .event-click {
     cursor: pointer;
     &:hover {

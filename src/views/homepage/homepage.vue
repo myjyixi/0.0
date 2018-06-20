@@ -7,24 +7,33 @@
           </el-date-picker>
         </div>
         <div class="search-keyword" @keydown.enter="getEventList()">
-          <el-input v-model="searchWord" clearable placeholder="测量事件名/地点/仪器/操作员">
+          <el-input v-model="searchWord" clearable placeholder="地点/仪器/操作员">
             <el-button slot="append" @click="getEventList()">搜索</el-button>
           </el-input>
         </div>
       </template>
       <template slot="tableData" slot-scope="scope">
         <el-table class="table-list" ref="multipleTable" :data="scope.listData" tooltip-effect="dark" stripe>
-          <el-table-column label="测量事件名" prop="event_name" align="center">
+          <el-table-column label="上传时间" prop="update_time" align="center">
             <template slot-scope="scope">
-              <span class="event-click" @click="goEvent(scope.row.id)">{{scope.row.event_name}}</span>
+              <span class="click-link" @click="goEvent(scope.row.id)">
+                <p>{{utils.format_date(scope.row.update_time)}}</p>
+                <p>{{utils.format_time(scope.row.update_time)}}</p>
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column label="测量时间" prop="measure_time" align="center">
+            <template slot-scope="scope">
+              <p>{{utils.format_date(scope.row.measure_time)}}</p>
+              <p>{{utils.format_time(scope.row.measure_time)}}</p>
             </template>
           </el-table-column>
           <el-table-column label="地点" prop="site" align="center"></el-table-column>
           <el-table-column label="经纬度" prop="location" align="center">
             <template slot-scope="scope">
               <span>
-                {{utils.formatLon(scope.row.longitude)}}&nbsp;&nbsp;
-                {{utils.formatLat(scope.row.latitude)}}
+                <p>{{utils.formatLon(scope.row.longitude)}}</p>
+                <p>{{utils.formatLat(scope.row.latitude)}}</p>
               </span>
             </template>
           </el-table-column>
@@ -36,7 +45,7 @@
           <el-table-column label="重力值(μGal)" prop="g" align="center">
             <template slot-scope="scope">
               <span>
-                {{scope.row.g.toFixed(7)}}
+                {{scope.row.g ? scope.row.g.toFixed(1) : ''}}
                 {{scope.row.uncertainty ? ('(' + scope.row.uncertainty + ')') : ''}}
               </span>
             </template>
@@ -44,7 +53,13 @@
           <el-table-column label="仪器" prop="instrument" align="center"></el-table-column>
           <el-table-column label="操作员" prop="operator" align="center">
             <template slot-scope="scope">
-              <span class="event-click" @click="goUser">{{scope.row.operator}}</span>
+              <span class="click-link" @click="goUser">{{scope.row.operator}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" width="150">
+            <template slot-scope="props">
+              <!-- <span @click="editData(props.row.id)" class="click-link">编辑</span>&nbsp;&nbsp; -->
+              <span @click="delEvent(props.row.id)" class="click-link" style="color: #409EFF">删除</span>
             </template>
           </el-table-column>
         </el-table>
@@ -61,7 +76,7 @@ export default {
     return {
       utils: utils,
       eventList: [],
-      searchTime: [],
+      searchTime: ['', ''],
       searchWord: ''
     }
   },
@@ -71,6 +86,7 @@ export default {
     ])
   },
   mounted() {
+    // 获取列表数据
     this.getEventListData().then(() => {
       this.eventList = this.eventListData
     })
@@ -83,11 +99,12 @@ export default {
   methods: {
     ...mapActions([
       'getEventListData',
-      'getEventDetailData'
+      'getEventDetailData',
+      'delEventData'
     ]),
     // 获取事件列表
     getEventList() {
-      this.getEventListData([...this.searchTime, this.searchWord])
+      this.getEventListData([...(this.searchTime === null ? ['', ''] : this.searchTime), this.searchWord])
       // console.log(this.searchTime)
     },
     /**
@@ -101,6 +118,26 @@ export default {
       // 获取测量事件详细数据
       this.getEventDetailData(pid)
     },
+    // 删除历史记录
+    delEvent(eventId) {
+      let that = this
+      this.$confirm('确定删除该条记录?', '提示', {dangerouslyUseHTMLString: true}, {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 删除事件请求
+        that.delEventData([eventId, ...(this.searchTime === null ? ['', ''] : this.searchTime), this.searchWord]).then(data => {
+          if (data) {
+            utils.showSuccessMsg(that, '已成功删除')
+          } else {
+            utils.showErrorMsg(that, '删除失败')
+          }
+        })
+      }).catch(() => {
+        utils.showInfoMsg(that, '已取消删除')
+      })
+    },
     goUser() {
     }
   }
@@ -109,7 +146,7 @@ export default {
 <style lang="scss" scoped>
 .table-list {
   width: 100%;
-  .event-click {
+  .click-link {
     cursor: pointer;
     &:hover {
       text-decoration: underline;
