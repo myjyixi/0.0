@@ -2,28 +2,16 @@
   <div class="login grid-middle showBgAnimate">
     <div class="col">
       <div class="content">
-        <div class="img-wrapper">
-          <div class="wrapper">
-            <!--<img src="../../assets/images/login_logo.png">-->
-            <login></login>
-          </div>
-        </div>
         <div class="word">
+          <img src="../../assets/images/ZAG.png" class="img">
           <h1>
             Web&nbsp;&nbsp;GIS
           </h1>
-          <!-- <h4>
-            <span style="font-family:'HYGYT'; font-style:normal; font-weight:normal;">“魔方墙”</span>为你而在
-          </h4>
-          <h4>
-            和卖家谈一场白头到老海枯石烂的恋爱吧
-          </h4>
-          <div class="bottom">
-            @2016-2017 杭州聚效科技有限公司 版权所有
-            <br> 增值电信业务经营许可证：
-            <a href="http://www.miitbeian.gov.cn/" class="" target="_blank">浙ICP备14043836号</a>
-          </div> -->
-
+        </div>
+        <div class="img-wrapper">
+          <div class="wrapper">
+            <login></login>
+          </div>
         </div>
       </div>
     </div>
@@ -35,16 +23,10 @@ import login from 'components/login/login'
 export default {
   data() {
     return {
-      activeName: 'login',
       username: '',
       password: '',
       unOder: false,
 
-    }
-  },
-  methods: {
-    changeLogin() {
-      this.activeName = 'login'
     }
   },
   components: {
@@ -150,7 +132,8 @@ export default {
     bottom: 40px;
     .img-wrapper {
       position: absolute;
-      margin-top: 10px;
+      top: 100px;
+      left: 300px;
       .wrapper {
         position: relative;
         width: 250px;
@@ -177,7 +160,9 @@ export default {
       color: #fff;
       position: absolute;
       top: 50px;
-      left: 350px;
+      img {
+        width: 200px;
+      }
       h1 {
         margin: 0;
         font-size: 45px;
