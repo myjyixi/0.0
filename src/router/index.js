@@ -52,11 +52,12 @@ router.beforeEach((to, from, next) => {
       // 获取上一个url，在url上追加用户id，用于多用户登录身份识别
       var from_tokenKey = from.query.tokenKey
       var to_tokenKey = to.query.tokenKey
+      // 刷新或路由跳转
       if (to_tokenKey) {
         next()
         return
       }
-      // url上无用户id，继续
+      // 刷新
       if (!from_tokenKey) {
         next()
         return
@@ -65,8 +66,7 @@ router.beforeEach((to, from, next) => {
       var tokenObj = JSON.parse(window.localStorage.getItem(from_tokenKey) || '[]')
       // URl上的参数
       var params = to.query
-      // 本地token未过期
-      if (tokenObj.data && tokenObj.data.length && !utils.getLocalStore(tokenObj).timeout) {
+      if (tokenObj.data && tokenObj.data.length) { // 存在token
         // 将用户id追加到url上
         params['tokenKey'] = from_tokenKey
         // 继续跳转
@@ -74,22 +74,6 @@ router.beforeEach((to, from, next) => {
           path: to.path,
           query: params
         })
-        // 本地token过期
-      } else if (tokenObj.data && tokenObj.data.length && utils.getLocalStore(tokenObj).timeout) {
-        // token过期则刷新token
-        store.dispatch('updateToken').then(() => {
-          // 用户信息
-          store.dispatch('getUser').then(user => {
-            // 重新设置用户id，追加到url上
-            params['tokenKey'] = user.user_id
-            // 继续跳转
-            next({
-              path: to.path,
-              query: params
-            })
-          })
-        })
-        // 本地没有token信息
       } else {
         next({ path: '/login' })
       }
