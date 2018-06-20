@@ -2,7 +2,7 @@
  * @Author: xiamu
  * @Date: 2018-05-02 19:36:50
  * @Last Modified by: xiamu
- * @Last Modified time: 2018-05-17 22:09:43
+ * @Last Modified time: 2018-06-20 15:51:14
  */
 import CommonHttpTransform from './commonHttpTransform.service.js'
 import pagination from 'src/misc/pagination'
@@ -27,7 +27,28 @@ export default {
       })
     })
   },
-  // 获取测量事件详细数据
+  // 删除测量事件
+  delEventData(eventId, startTime = '', endTime = '', keyword = '') {
+    return new Promise((resolve, reject) => {
+      CommonHttpTransform.get(
+        '/del_event' +
+        '?id=' + eventId + // 事件id
+        '&start_time=' + startTime + // 开始时间
+        '&end_time=' + endTime + // 结束时间
+        '&search=' + keyword + // 搜索关键字
+        '&page=' + pagination.pageIndex + // 当前页码
+        '&per_page=' + pagination.pageSize // 每页条数
+      ).then(data => {
+        if (data.pagination) {
+          pagination.totalNum = data.pagination.total
+          pagination.pageSize = data.pagination.per_page
+          pagination.pageIndex = data.pagination.current_page
+        }
+        resolve(data.data)
+      })
+    })
+  },
+  // 获取测量事件详细数据（分页）
   getEventDetailData(eventId) {
     return new Promise((resolve, reject) => {
       CommonHttpTransform.get(
@@ -45,16 +66,30 @@ export default {
       })
     })
   },
+  // 获取测量事件详细数据（全部-绘图）
+  getEventDetailAllData(eventId) {
+    return new Promise((resolve, reject) => {
+      CommonHttpTransform.get(
+        '/event_detail_all' +
+        '?id=' + eventId // 事件id
+      ).then(data => {
+        resolve(data.data)
+      })
+    })
+  },
   // 上传测量事件
   uploadEventData(eventData) {
     return new Promise((resolve, reject) => {
-      CommonHttpTransform.post('/upload', eventData).then(data => {
-        if (data.pagination) {
-          pagination.totalNum = data.pagination.total
-          pagination.pageSize = data.pagination.per_page
-          pagination.pageIndex = data.pagination.current_page
-        }
-        resolve(data.data)
+      CommonHttpTransform.postUpload('/upload', eventData).then(data => {
+        resolve(data)
+      })
+    })
+  },
+  // 下载文件
+  downloadFile(eventId) {
+    return new Promise((resolve, reject) => {
+      CommonHttpTransform.get('/download?id=' + eventId).then(data => {
+        resolve(data)
       })
     })
   }
