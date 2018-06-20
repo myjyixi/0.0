@@ -2,7 +2,7 @@
  * @Author: xiamu
  * @Date: 2018-05-02 19:26:15
  * @Last Modified by: xiamu
- * @Last Modified time: 2018-05-12 22:32:43
+ * @Last Modified time: 2018-06-02 19:54:01
  */
 import axios from 'axios'
 import config from '../misc/config'
@@ -42,7 +42,7 @@ axios.interceptors.response.use(res => {
       case 401:
         if (window) {
           window.localStorage.removeItem(userId)
-          window.location.href = '/login.html?message=未授权登录！'
+          window.location.href = '/login?message=未授权登录！'
         }
         break
     }
@@ -61,12 +61,12 @@ export default {
     if (!path.includes('login') && !path.includes('account?token=')) {
       path = userId ? path + (path.includes('?') ? '&' : '?') + 'user_id=' + userId : path
     }
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       axios.get(config.API_URL + path)
-        .then(function (res) {
+        .then(function(res) {
           resolve(res.data)
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.error(error)
           reject(error)
         })
@@ -84,14 +84,35 @@ export default {
     if (!path.includes('login') && !path.includes('account?token=')) {
       path = userId ? path + (path.includes('?') ? '&' : '?') + 'user_id=' + userId : path
     }
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       axios.post(config.API_URL + path, reqBody)
-        .then(function (res) {
+        .then(function(res) {
           resolve(res.data)
         })
-        .catch(function (error) {
+        .catch(function(error) {
           reject(error.response.data)
         })
     })
-  }
+  },
+  postUpload(path, reqBody) {
+    let userId = user.state.userData.user_id || router.currentRoute.query['tokenKey']
+    // 新登录时/login 和/account不携带user_id，其余携带，用于刷新
+    if (!path.includes('login') && !path.includes('account?token=')) {
+      path = userId ? path + (path.includes('?') ? '&' : '?') + 'user_id=' + userId : path
+    }
+    return new Promise(function(resolve, reject) {
+      axios.post(config.API_URL + path, reqBody, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then(function(res) {
+          resolve(res.data)
+        })
+        .catch(function(error) {
+          console.error(error)
+          reject(error)
+        })
+    })
+  },
 }

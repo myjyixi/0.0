@@ -8,22 +8,18 @@
         <el-input v-model="eventForm.site"></el-input>
       </el-form-item>
       <el-form-item label="经度：" prop="longitude">
-        <el-input v-model="eventForm.longitude"></el-input>
+        <el-input v-model="eventForm.longitude" placeholder="正数为东经，负数为西经"></el-input>
       </el-form-item>
-      <el-form-item label="维度：" prop="latitude">
-        <el-input v-model="eventForm.latitude"></el-input>
+      <el-form-item label="纬度：" prop="latitude">
+        <el-input v-model="eventForm.latitude" placeholder="正数为北纬，负数为南纬"></el-input>
       </el-form-item>
       <el-form-item label="高度：" prop="height">
         <el-input v-model="eventForm.height"></el-input>
       </el-form-item>
-      <el-form-item label="重力值：" prop="g">
-        <el-input v-model="eventForm.g" disabled></el-input>
-      </el-form-item>
-      <el-form-item label="Uncertainty：" prop="uncertainty">
+      <el-form-item label="不确定度：" prop="uncertainty">
         <el-input v-model="eventForm.uncertainty"></el-input>
       </el-form-item>
       <el-form-item label="上传文件：">
-        <!-- <file-upload name="file" title="点击上传"></file-upload> -->
         <el-upload
           ref="upload"
           :action="uploadUrl"
@@ -32,9 +28,7 @@
           :on-remove="handleRemove"
           :before-remove="beforeRemove"
           :on-change="fileChange"
-          :before-upload="beforeUpload"
-          multiple
-          :limit="3"
+          :limit="1"
           :on-exceed="handleExceed"
           :auto-upload="false"
           >
@@ -55,7 +49,7 @@
         <el-input v-model="eventForm.operator"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('eventForm')">上传</el-button>
+        <el-button type="primary" @click="submitForm('eventForm')" :loading="isUpdating">{{isUpdating ? '上传中' : '上传'}}</el-button>
         <el-button @click="resetForm('eventForm')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -65,18 +59,37 @@
 import { mapGetters, mapActions } from 'vuex'
 import utils from 'src/misc/utils'
 import g_const from 'src/misc/global.constant'
-// import fileUpload from 'vue-upload-component'
 export default {
   data() {
+    var validateNum = (rule, value, callback) => {
+      if (isNaN(value - 0)) {
+        callback(new Error('请输入数字'))
+      } else {
+        callback()
+      }
+    }
+    var validateLon = (rule, value, callback) => {
+      if (Math.abs(value) > 180) {
+        callback(new Error('请输入正确格式经度'))
+      } else {
+        callback()
+      }
+    }
+    var validateLat = (rule, value, callback) => {
+      if (Math.abs(value) > 90) {
+        callback(new Error('请输入正确格式纬度'))
+      } else {
+        callback()
+      }
+    }
     return {
       eventForm: {
         update_time: utils.getNowTime(),
-        site: 'Hangzhou',
-        longitude: 123.2222,
-        latitude: 31.232,
-        height: 34.212,
-        g: '',
-        uncertainty: 123.213,
+        site: '',
+        longitude: '',
+        latitude: '',
+        height: '',
+        uncertainty: '',
         task_group: 'AllTask',
         task: '6Fringe',
         instrument: 'ZAG-01',
@@ -84,36 +97,43 @@ export default {
       },
       uploadUrl: 'http://localhost:3000/api/upload?user_id=19951012&token=xiamu20185111658177',
       isChooseFile: false,
+      isUpdating: false,
       eventRules: {
         update_time: [
           { required: true, message: '请输入上传时间', trigger: 'blur' }
         ],
         site: [
-          { required: true, message: '请输入地点', trigger: 'blur' }
+          { required: true, message: '请输入地点', trigger: ['blur', 'change'] }
         ],
         longitude: [
-          { required: true, message: '请输入经度', trigger: 'blur' }
+          { required: true, message: '请输入经度', trigger: ['blur', 'change'] },
+          { required: true, validator: validateNum, trigger: ['blur', 'change'] },
+          { required: true, validator: validateLon, trigger: ['blur', 'change'] }
         ],
         latitude: [
-          { required: true, message: '请输入维度', trigger: 'blur' }
+          { required: true, message: '请输入纬度', trigger: ['blur', 'change'] },
+          { required: true, validator: validateNum, trigger: ['blur', 'change'] },
+          { required: true, validator: validateLat, trigger: ['blur', 'change'] }
         ],
         height: [
-          { required: true, message: '请输入高度', trigger: 'blur' }
+          { required: true, message: '请输入高度', trigger: ['blur', 'change'] },
+          { required: true, validator: validateNum, trigger: ['blur', 'change'] }
         ],
         uncertainty: [
-          { required: true, message: '请输入不确定度', trigger: 'blur' }
+          { required: true, message: '请输入不确定度', trigger: ['blur', 'change'] },
+          { required: true, validator: validateNum, trigger: ['blur', 'change'] }
         ],
         task_group: [
-          { required: true, message: '请输入任务组', trigger: 'blur' }
+          { required: true, message: '请输入任务组', trigger: ['blur', 'change'] }
         ],
         task: [
-          { required: true, message: '请输入任务', trigger: 'blur' }
+          { required: true, message: '请输入任务', trigger: ['blur', 'change'] }
         ],
         instrument: [
-          { required: true, message: '请输入设备型号', trigger: 'blur' }
+          { required: true, message: '请输入设备型号', trigger: ['blur', 'change'] }
         ],
         operator: [
-          { required: true, message: '请输入操作员', trigger: 'blur' }
+          { required: true, message: '请输入操作员', trigger: ['blur', 'change'] }
         ],
       }
     }
@@ -135,17 +155,38 @@ export default {
   },
   methods: {
     ...mapActions([
-      'uploadEventData'
+      'uploadEventData',
+      'saveEventData'
     ]),
+    // el-上传函数
     uploadEvent(val) {
-      console.log(val, '--upload')
-    },
-    handlePreview(file) {
-      console.log(file)
+      this.isUpdating = true
+      let formData = new FormData()
+      formData.append('file', val.file)
+      formData.append('update_time', val.data.update_time)
+      formData.append('site', val.data.site)
+      formData.append('longitude', val.data.longitude)
+      formData.append('latitude', val.data.latitude)
+      formData.append('height', val.data.height)
+      formData.append('uncertainty', val.data.uncertainty)
+      formData.append('task_group', val.data.task_group)
+      formData.append('task', val.data.task)
+      formData.append('instrument', val.data.instrument)
+      formData.append('operator', val.data.operator)
+      this.uploadEventData(formData).then(data => {
+        if (data.data) {
+          utils.showSuccessMsg(this, '上传成功')
+          // 重置参数
+          this.resetForm()
+        } else if (data.error) {
+          utils.showErrorMsg(this, '上传失败')
+        }
+        this.isUpdating = false
+      })
     },
     // 超出文件上限钩子
     handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
+      utils.showWarningMsg(this, `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${fileList.length} 个文件`)
     },
     // 选择文件钩子
     fileChange(file, fileList) {
@@ -161,27 +202,20 @@ export default {
         this.isChooseFile = false
       }
     },
-    beforeUpload(file) {
-      console.log('before-upload')
-      console.log(file, 'upload-file')
-    },
     // 删除文件前钩子
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
     },
     // 提交函数
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+    submitForm() {
+      let that = this
+      this.$refs['eventForm'].validate((valid) => {
         if (valid) {
-          if (this.isChooseFile) {
+          if (that.isChooseFile) {
             // 文件上传
-            this.$refs.upload.submit()
-            // this.uploadEventData(this.eventForm)
+            that.$refs.upload.submit()
           } else {
-            this.$message({
-              message: '未选择文件，无法上传~',
-              type: 'warning'
-            })
+            utils.showWarningMsg(this, '未选择文件，无法上传~')
           }
         } else {
           console.log('error submit!!')
@@ -190,16 +224,14 @@ export default {
       })
     },
     // 重置函数
-    resetForm(formName) {
+    resetForm() {
       // 重置数据
-      this.$refs[formName].resetFields()
+      this.$refs['eventForm'].resetFields()
+      this.eventForm.update_time = utils.getNowTime()
       this.eventForm.operator = this.userData.user_name
       // 清空选择的文件
       this.$refs['upload'].clearFiles()
     }
-  },
-  components: {
-    // fileUpload
   }
 }
 </script>
