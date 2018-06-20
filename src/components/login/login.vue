@@ -1,13 +1,17 @@
 <template>
   <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="btn-block">
     <el-form-item label="用户名" prop="user_name">
-      <el-input v-model="ruleForm.user_name" auto-complete="off"></el-input>
+      <div @keydown.enter="submitLogin('ruleForm')">
+        <el-input v-model="ruleForm.user_name" auto-complete="off"></el-input>
+      </div>
     </el-form-item>
     <el-form-item label="密码" prop="password">
-      <el-input type="password" v-model="ruleForm.password" auto-complete="off"></el-input>
+      <div @keydown.enter="submitLogin('ruleForm')">
+        <el-input type="password" v-model="ruleForm.password" auto-complete="off"></el-input>
+      </div>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" size="medium" @click="submitLogin('ruleForm')">登录</el-button>
+      <el-button type="primary" @click="submitLogin('ruleForm')">登录</el-button>
     </el-form-item>
   </el-form>
 </template>
