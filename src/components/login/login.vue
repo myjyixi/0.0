@@ -18,6 +18,7 @@
 
 <script type="text/ecmascript-6" scoped>
 import { mapGetters, mapActions } from 'vuex'
+import utils from 'src/misc/utils'
 export default {
   data() {
     // 用户名验证
@@ -73,10 +74,7 @@ export default {
             } else { // 登录失败 提示错误
               // 清空登录表单
               that.ruleForm = { user_name: '', password: '' }
-              that.$message({
-                message: '登录失败，用户名或密码错误！',
-                type: 'warning'
-              })
+              utils.showErrorMsg(this, '登录失败，用户名或密码错误！')
             }
           })
         } else {

@@ -90,8 +90,8 @@ export default {
         latitude: '',
         height: '',
         uncertainty: '',
-        task_group: 'AllTask',
-        task: '6Fringe',
+        task_group: '',
+        task: '',
         instrument: 'ZAG-01',
         operator: ''
       },
@@ -133,7 +133,7 @@ export default {
           { required: true, message: '请输入设备型号', trigger: ['blur', 'change'] }
         ],
         operator: [
-          { required: true, message: '请输入操作员', trigger: ['blur', 'change'] }
+          { required: true, message: '请输入操作员', trigger: 'blur' }
         ],
       }
     }

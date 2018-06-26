@@ -140,6 +140,7 @@ export default {
         }, {
           name: '倾斜修正',
           type: 'line',
+          yAxisIndex: 1,
           hoverAnimation: false,
           data: that.data_corr_tilt
         }, {

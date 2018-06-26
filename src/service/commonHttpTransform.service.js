@@ -2,7 +2,7 @@
  * @Author: xiamu
  * @Date: 2018-05-02 19:26:15
  * @Last Modified by: xiamu
- * @Last Modified time: 2018-06-02 19:54:01
+ * @Last Modified time: 2018-06-25 10:30:25
  */
 import axios from 'axios'
 import config from '../misc/config'
@@ -13,10 +13,8 @@ import user from '../vuex/modules/user'
 // axios.defaults.headers.common['Accept'] = 'application/vnd.aicrm.v1+json'
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
-// const userId = '132456'
 // 添加请求拦截器
 axios.interceptors.request.use(req => {
-  // console.log(this.$store)
   let userId = user.state.userData.user_id || router.currentRoute.query['tokenKey']
   let token = ''
   // 存储localStorage上的token
